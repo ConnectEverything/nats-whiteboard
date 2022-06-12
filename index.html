@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <script type="module" src="/main.js"></script>
+
+    <div x-data="whiteboard">
+      <canvas 
+        x-init="sizeCanvas($el)"
+        @resize.window="sizeCanvas($el)"
+        @mousedown="startDrawing($event)"
+        @mouseup="drawing=false"
+        @mousemove="drawing && draw($event)"
+        >
+      </canvas>
+    </div>
+
+  </body>
+</html>
