@@ -9,7 +9,12 @@
   <body>
     <script type="module" src="/main.js"></script>
 
+
     <div x-data="whiteboard">
+
+      <input type="text" x-model="color">
+      <input type="number" x-model="thickness">
+
       <canvas 
         x-init="sizeCanvas($el)"
         @resize.window="sizeCanvas($el)"
