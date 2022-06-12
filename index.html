@@ -9,7 +9,6 @@
   <body>
     <script type="module" src="/main.js"></script>
 
-
     <div x-data="whiteboard">
 
       <input type="text" x-model="color">
@@ -17,7 +16,6 @@
 
       <canvas 
         x-init="sizeCanvas($el)"
-        @resize.window="sizeCanvas($el)"
         @mousedown="startDrawing($event)"
         @mouseup="drawing=false"
         @mousemove="drawing && draw($event)"
