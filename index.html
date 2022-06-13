@@ -9,15 +9,15 @@
   <body>
     <script type="module" src="/main.js"></script>
 
-    <div x-data="whiteboard('ws://localhost:9222', 'whiteboard')" class="container">
+    <div x-data="whiteboard('whiteboard.demo')" class="container">
       <div class="absolute w-full">
         <div class="p-4 relative gap-4 flex">
           <div class="pr-4 gap-4 flex border-r border-slate-300">
 
             <template x-for="c in ['black', 'red', 'green', 'blue']">
-              <div 
-                class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1"
-                :class="color===c ? `bg-[${c}] ring-[${c}] ring-2` : `bg-[${c}] ring-[${c}]`"
+              <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 "
+                :class="color===c ? 'ring-2' : ''"
+                :style="`background:${c};`"
                 @click="color = c"
                 ></div>
             </template>

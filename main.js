@@ -5,7 +5,7 @@ import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
 
 window.Alpine = Alpine
 
-Alpine.data("whiteboard", (server, subject) => ({
+Alpine.data("whiteboard", (subject) => ({
   id: Math.random(),
   color: "black",
   thickness: 5,
@@ -16,6 +16,7 @@ Alpine.data("whiteboard", (server, subject) => ({
   jc: null,
 
   async init() {
+    const server = import.meta.env.VITE_NATS_SERVER
     this.jc = JSONCodec()
     this.nats = await connect({ servers: server })
 
@@ -74,7 +75,7 @@ Alpine.data("whiteboard", (server, subject) => ({
       const msg = { id: this.id, type: "clear", }
       const h = headers()
       h.set("Nats-Rollup", "sub")
-      this.nats.publish("whiteboard", this.jc.encode(msg), { headers: h })
+      this.nats.publish(subject, this.jc.encode(msg), { headers: h })
   },
 
   drawRaw({from, to, thickness, color}) {
