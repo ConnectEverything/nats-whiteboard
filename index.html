@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>NATS Whiteboard</title>
   </head>
-  <body class="touch-none"
+  <body
+    class="touch-none"
     x-data="{
       room: (new URLSearchParams(window.location.search)).get('room'),
       goToRoom() {
@@ -18,7 +19,7 @@
 
     <template x-if="!room">
       <div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-white py-6 sm:py-12">
-        <div class="mx-auto max-w-4xl p-20 text-center">
+        <div class="mx-auto max-w-4xl p-10 text-center">
           <h2 class="text-5xl font-bold leading-tight text-slate-800">NATS Whiteboard</h2>
           <p class="mt-5 text-xl leading-8 text-slate-800">This demo showcases how NATS+Jetstream can help frontend developers create realtime, persisted experiences: no backend code needed.</p>
           <p class="mt-5 text-xl leading-8 text-slate-800">Create a whiteboard and share the URL with others to start collaborating in real time!</p>
