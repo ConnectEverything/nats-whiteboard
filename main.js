@@ -5,7 +5,7 @@ import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
 
 window.Alpine = Alpine
 
-Alpine.data("whiteboard", () => ({
+Alpine.data("whiteboard", (server, subject) => ({
   id: Math.random(),
   color: "black",
   thickness: 5,
@@ -17,11 +17,11 @@ Alpine.data("whiteboard", () => ({
 
   async init() {
     this.jc = JSONCodec()
-    this.nats = await connect({ servers: "ws://localhost:9222" })
+    this.nats = await connect({ servers: server })
 
     const opts = consumerOpts()
     opts.orderedConsumer()
-    const sub = await this.nats.jetstream().subscribe("whiteboard", opts)
+    const sub = await this.nats.jetstream().subscribe(subject, opts)
 
     for await(const m of sub) {
       const data = this.jc.decode(m.data)
@@ -64,7 +64,7 @@ Alpine.data("whiteboard", () => ({
       }
 
       this.drawRaw(msg)
-      this.nats.publish("whiteboard", this.jc.encode(msg))
+      this.nats.publish(subject, this.jc.encode(msg))
 
       this.last = to
     }, 30)()

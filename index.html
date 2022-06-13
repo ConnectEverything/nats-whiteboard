@@ -9,7 +9,7 @@
   <body>
     <script type="module" src="/main.js"></script>
 
-    <div x-data="whiteboard" class="container">
+    <div x-data="whiteboard('ws://localhost:9222', 'whiteboard')" class="container">
       <div class="absolute w-full">
         <div class="p-4 relative gap-4 flex">
           <div class="pr-4 gap-4 flex border-r border-slate-300">
