@@ -13,6 +13,7 @@
 
       <input type="text" x-model="color">
       <input type="number" x-model="thickness">
+      <button type="button" @click="clear()">Clear Screen</button>
 
       <canvas 
         x-init="sizeCanvas($el)"

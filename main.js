@@ -1,7 +1,7 @@
 import './style.css'
 import Alpine from "alpinejs";
 import throttle from './throttle';
-import { connect, consumerOpts, JSONCodec } from 'nats.ws';
+import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
 
 window.Alpine = Alpine
 
@@ -25,8 +25,16 @@ Alpine.data("whiteboard", () => ({
 
     for await(const m of sub) {
       const data = this.jc.decode(m.data)
-      if(data.id !== this.id) {
-        this.drawRaw(data)
+      switch (data.type) {
+        case "draw":
+          if(data.id !== this.id) {
+            this.drawRaw(data)
+          }
+          break;
+        case "clear":
+          this.context.clearRect(0 ,0 ,window.innerWidth, window.innerHeight)
+        default:
+          break;
       }
     }
   },
@@ -46,13 +54,27 @@ Alpine.data("whiteboard", () => ({
     throttle(() => {
       const from = this.last
       const to = { x: e.offsetX, y: e.offsetY }
-      const msg = { id: this.id, from: from, to: to, thickness: this.thickness, color: this.color }
+      const msg = {
+        id: this.id,
+        type: "draw",
+        from: from,
+        to: to,
+        thickness: this.thickness,
+        color: this.color 
+      }
 
       this.drawRaw(msg)
       this.nats.publish("whiteboard", this.jc.encode(msg))
 
       this.last = to
     }, 30)()
+  },
+
+  clear() {
+      const msg = { id: this.id, type: "clear", }
+      const h = headers()
+      h.set("Nats-Rollup", "sub")
+      this.nats.publish("whiteboard", this.jc.encode(msg), { headers: h })
   },
 
   drawRaw({from, to, thickness, color}) {
