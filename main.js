@@ -3,8 +3,6 @@ import Alpine from "alpinejs";
 import throttle from './throttle';
 import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
 
-window.Alpine = Alpine
-
 Alpine.data("whiteboard", (subject) => ({
   id: Math.random(),
   color: "black",
@@ -48,13 +46,13 @@ Alpine.data("whiteboard", (subject) => ({
 
   startDrawing(e) {
     this.drawing = true
-    this.last = { x: e.offsetX, y: e.offsetY }
+    this.last = this.getPoint(e)
   },
 
   draw(e) {
     throttle(() => {
       const from = this.last
-      const to = { x: e.offsetX, y: e.offsetY }
+      const to = this.getPoint(e)
       const msg = {
         id: this.id,
         type: "draw",
@@ -71,11 +69,20 @@ Alpine.data("whiteboard", (subject) => ({
     }, 30)()
   },
 
+  getPoint(e) {
+    if(!e.offsetX || !e.offsetY) {
+      const rect = e.target.getBoundingClientRect()
+      e.offsetX = (e.touches[0].clientX - window.pageXOffset - rect.left)
+      e.offsetY = (e.touches[0].clientY - window.pageYOffset - rect.top)
+    }
+    return { x: e.offsetX, y: e.offsetY }
+  },
+
   clear() {
-      const msg = { id: this.id, type: "clear", }
-      const h = headers()
-      h.set("Nats-Rollup", "sub")
-      this.nats.publish(subject, this.jc.encode(msg), { headers: h })
+    const msg = { id: this.id, type: "clear", }
+    const h = headers()
+    h.set("Nats-Rollup", "sub")
+    this.nats.publish(subject, this.jc.encode(msg), { headers: h })
   },
 
   drawRaw({from, to, thickness, color}) {

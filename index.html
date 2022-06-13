@@ -6,48 +6,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
-  <body>
+  <body class="touch-none"
+    x-data="{
+      room: (new URLSearchParams(window.location.search)).get('room'),
+      goToRoom() {
+        window.location.replace(`?room=${Math.random().toString(36).slice(2, 10)}`)
+      }
+    }">
+
     <script type="module" src="/main.js"></script>
 
-    <div x-data="whiteboard('whiteboard.demo')" class="container">
-      <div class="absolute w-full">
-        <div class="p-4 relative gap-4 flex">
-          <div class="pr-4 gap-4 flex border-r border-slate-300">
-
-            <template x-for="c in ['black', 'red', 'green', 'blue']">
-              <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 "
-                :class="color===c ? 'ring-2' : ''"
-                :style="`background:${c};`"
-                @click="color = c"
-                ></div>
-            </template>
+    <template x-if="!room">
+      <div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-white py-6 sm:py-12">
+        <div class="mx-auto max-w-4xl p-20 text-center">
+          <h2 class="text-5xl font-bold leading-tight text-slate-800">NATS Whiteboard</h2>
+          <p class="mt-5 text-xl leading-8 text-slate-800">This demo showcases how NATS+Jetstream can help frontend developers create realtime, persisted experiences: no backend code needed.</p>
+          <p class="mt-5 text-xl leading-8 text-slate-800">Create a whiteboard and share the URL with others to start collaborating in real time!</p>
+          <div class="mt-6 flex items-center justify-center gap-4">
+            <button @click="goToRoom()" class="flex items-center justify-center gap-2 rounded-full bg-violet-500 px-5 py-3 text-lg font-medium text-white">
+              <span>Start a Whiteboard</span>
+              <span
+                ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6.00156 13.4016L4.60156 12.0016L8.60156 8.00156L4.60156 4.00156L6.00156 2.60156L11.4016 8.00156L6.00156 13.4016Z" fill="white" /></svg
+                ></span>
+            </button>
           </div>
-
-          <div class="pr-4 gap-4 flex border-r border-slate-300">
-            <select class="bg-white" x-model="thickness">
-              <template x-for="n in [5,10,15,20]">
-                <option :value="n" x-text="`${n}pt`"></option>
-              </template>
-            </select>
-          </div>
-
-          <button type="button" @click="clear()" class="stroke-slate-600 fill-transparent">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
         </div>
       </div>
+    </template>
 
-      <canvas 
-        class="w-screen h-screen"
-        x-init="sizeCanvas($el)"
-        @mousedown="startDrawing($event)"
-        @mouseup="drawing=false"
-        @mousemove="drawing && draw($event)"
-        >
-      </canvas>
-    </div>
+    <template x-if="room">
+      <div x-data="whiteboard('whiteboard.' + room)" class="container">
+        <div class="absolute w-full">
+          <div class="p-4 relative gap-4 flex">
+            <div class="pr-4 gap-4 flex border-r border-slate-300">
+
+              <template x-for="c in ['black', 'red', 'green', 'blue']">
+                <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 "
+                  :class="color===c ? 'ring-2' : ''"
+                  :style="`background:${c};`"
+                  @click="color = c"
+                  ></div>
+              </template>
+            </div>
+
+            <div class="pr-4 gap-4 flex border-r border-slate-300">
+              <select class="bg-white" x-model="thickness">
+                <template x-for="n in [5,10,15,20]">
+                  <option :value="n" x-text="`${n}pt`"></option>
+                </template>
+              </select>
+            </div>
+
+            <button type="button" @click="clear()" class="stroke-slate-600 fill-transparent">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <canvas 
+          class="w-screen h-screen"
+          x-init="sizeCanvas($el)"
+          @mousedown="startDrawing($event)"
+          @mouseup="drawing=false"
+          @mousemove="drawing && draw($event)"
+          @touchstart="startDrawing($event)"
+          @touchend="drawing=false"
+          @touchmove="drawing && draw($event)"
+          >
+        </canvas>
+      </div>
+    </template>
 
   </body>
 </html>
