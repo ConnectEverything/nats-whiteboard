@@ -43,7 +43,7 @@
             <div class="pr-4 gap-4 flex border-r border-slate-300">
 
               <template x-for="c in ['black', 'red', 'green', 'blue', 'white']">
-                <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 "
+                <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 border border-slate-300"
                   :class="color===c ? 'ring-2' : ''"
                   :style="`background:${c};`"
                   @click="color = c"
