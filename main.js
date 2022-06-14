@@ -4,7 +4,7 @@ import throttle from './throttle';
 import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
 
 Alpine.data("whiteboard", (subject) => ({
-  id: Math.random(),
+  id: Math.random().toString(36).slice(2, 10),
   color: "black",
   thickness: 5,
   drawing: false,
