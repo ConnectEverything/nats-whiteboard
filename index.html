@@ -38,9 +38,10 @@
 
     <template x-if="room">
       <div x-data="whiteboard('whiteboard.' + room)" class="container">
+
         <div class="absolute w-full">
-          <div class="p-4 relative gap-4 flex">
-            <div class="pr-4 gap-4 flex border-r border-slate-300">
+          <div class="p-4 relative gap-3 flex">
+            <div class="pr-4 gap-3 flex border-r border-slate-300">
 
               <template x-for="c in ['black', 'red', 'green', 'blue', 'white']">
                 <div class="w-8 h-8 transition-all rounded-full block hover:ring-2 ring-offset-1 border border-slate-300"
