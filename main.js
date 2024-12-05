@@ -1,7 +1,9 @@
 import './style.css'
 import Alpine from "alpinejs";
 import throttle from './throttle';
-import { connect, consumerOpts, headers, JSONCodec } from '@nats-io/nats-core';
+import { wsconnect, consumerOpts, headers, JSONCodec } from '@nats-io/nats-core';
+import { OrderedConsumerOptions } from "@nats-io/jetstream";
+import { jetstream } from "@nats-io/jetstream";
 
 Alpine.data("whiteboard", (subject) => ({
   id: Math.random().toString(36).slice(2, 10),
@@ -11,31 +13,29 @@ Alpine.data("whiteboard", (subject) => ({
   last: { x: 0, y: 0 },
   context: null,
   nats: null,
-  jc: null,
 
   async init() {
     const server = import.meta.env.VITE_NATS_SERVER
-    this.jc = JSONCodec()
-    this.nats = await connect({ servers: server })
+    this.nats = await wsconnect({ servers: server })
 
-    const opts = consumerOpts()
-    opts.orderedConsumer()
-    const sub = await this.nats.jetstream().subscribe(subject, opts)
+    // const opts = OrderedConsumerOptions;
+    // const js = jetstream(this.nats)
+    // const sub = await js.subscribe(subject, opts)
 
-    for await (const m of sub) {
-      const data = this.jc.decode(m.data)
-      switch (data.type) {
-        case "draw":
-          if (data.id !== this.id) {
-            this.drawRaw(data)
-          }
-          break;
-        case "clear":
-          this.context.clearRect(0, 0, window.innerWidth, window.innerHeight)
-        default:
-          break;
-      }
-    }
+    // for await (const m of sub) {
+    //   const data = this.jc.decode(m.data)
+    //   switch (data.type) {
+    //     case "draw":
+    //       if (data.id !== this.id) {
+    //         this.drawRaw(data)
+    //       }
+    //       break;
+    //     case "clear":
+    //       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight)
+    //     default:
+    //       break;
+    //   }
+    // }
   },
 
   sizeCanvas(canvas) {
@@ -63,7 +63,7 @@ Alpine.data("whiteboard", (subject) => ({
       }
 
       this.drawRaw(msg)
-      this.nats.publish(subject, this.jc.encode(msg))
+      this.nats.publish(subject, JSON.stringify(msg))
 
       this.last = to
     }, 30)()
@@ -82,7 +82,7 @@ Alpine.data("whiteboard", (subject) => ({
     const msg = { id: this.id, type: "clear", }
     const h = headers()
     h.set("Nats-Rollup", "sub")
-    this.nats.publish(subject, this.jc.encode(msg), { headers: h })
+    this.nats.publish(subject, JSON.stringify(msg), { headers: h })
   },
 
   drawRaw({ from, to, thickness, color }) {
