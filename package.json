@@ -14,6 +14,7 @@
     "vite": "^2.9.9"
   },
   "dependencies": {
+    "@nats-io/jetstream": "^3.0.0-34",
     "@nats-io/nats-core": "^3.0.0-47",
     "alpinejs": "^3.10.2"
   }
