@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@nats-io/nats-core": "^3.0.0-47",
-    "alpinejs": "^3.10.2",
-    "nats.ws": "^1.8.1"
+    "alpinejs": "^3.10.2"
   }
 }
