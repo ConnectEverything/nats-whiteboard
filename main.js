@@ -1,14 +1,14 @@
 import './style.css'
 import Alpine from "alpinejs";
 import throttle from './throttle';
-import { connect, consumerOpts, headers, JSONCodec } from 'nats.ws';
+import { connect, consumerOpts, headers, JSONCodec } from '@nats-io/nats-core';
 
 Alpine.data("whiteboard", (subject) => ({
   id: Math.random().toString(36).slice(2, 10),
   color: "black",
   thickness: 5,
   drawing: false,
-  last: { x:0, y:0 },
+  last: { x: 0, y: 0 },
   context: null,
   nats: null,
   jc: null,
@@ -22,16 +22,16 @@ Alpine.data("whiteboard", (subject) => ({
     opts.orderedConsumer()
     const sub = await this.nats.jetstream().subscribe(subject, opts)
 
-    for await(const m of sub) {
+    for await (const m of sub) {
       const data = this.jc.decode(m.data)
       switch (data.type) {
         case "draw":
-          if(data.id !== this.id) {
+          if (data.id !== this.id) {
             this.drawRaw(data)
           }
           break;
         case "clear":
-          this.context.clearRect(0 ,0 ,window.innerWidth, window.innerHeight)
+          this.context.clearRect(0, 0, window.innerWidth, window.innerHeight)
         default:
           break;
       }
@@ -59,7 +59,7 @@ Alpine.data("whiteboard", (subject) => ({
         from: from,
         to: to,
         thickness: this.thickness,
-        color: this.color 
+        color: this.color
       }
 
       this.drawRaw(msg)
@@ -70,7 +70,7 @@ Alpine.data("whiteboard", (subject) => ({
   },
 
   getPoint(e) {
-    if(!e.offsetX || !e.offsetY) {
+    if (!e.offsetX || !e.offsetY) {
       const rect = e.target.getBoundingClientRect()
       e.offsetX = (e.touches[0].clientX - window.pageXOffset - rect.left)
       e.offsetY = (e.touches[0].clientY - window.pageYOffset - rect.top)
@@ -85,7 +85,7 @@ Alpine.data("whiteboard", (subject) => ({
     this.nats.publish(subject, this.jc.encode(msg), { headers: h })
   },
 
-  drawRaw({from, to, thickness, color}) {
+  drawRaw({ from, to, thickness, color }) {
     const c = this.context
     c.beginPath()
     c.lineWidth = thickness
