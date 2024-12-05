@@ -20,22 +20,22 @@ Alpine.data("whiteboard", (subject) => ({
 
     // const opts = OrderedConsumerOptions;
     // const js = jetstream(this.nats)
-    // const sub = await js.subscribe(subject, opts)
+    const sub = await this.nats.subscribe(subject)
 
-    // for await (const m of sub) {
-    //   const data = this.jc.decode(m.data)
-    //   switch (data.type) {
-    //     case "draw":
-    //       if (data.id !== this.id) {
-    //         this.drawRaw(data)
-    //       }
-    //       break;
-    //     case "clear":
-    //       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    //     default:
-    //       break;
-    //   }
-    // }
+    for await (const m of sub) {
+      const data = m.json()
+      switch (data.type) {
+        case "draw":
+          if (data.id !== this.id) {
+            this.drawRaw(data)
+          }
+          break;
+        case "clear":
+          this.context.clearRect(0, 0, window.innerWidth, window.innerHeight)
+        default:
+          break;
+      }
+    }
   },
 
   sizeCanvas(canvas) {
