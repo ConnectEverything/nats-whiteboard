@@ -15,7 +15,7 @@ Alpine.data("whiteboard", (subject) => ({
   nats: null,
 
   async init() {
-    const server = import.meta.env.VITE_NATS_SERVER
+    const server = "ws://" + window.location.hostname + ":9222"
     this.nats = await wsconnect({ servers: server })
 
     // const opts = OrderedConsumerOptions;
