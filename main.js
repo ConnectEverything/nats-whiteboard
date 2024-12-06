@@ -1,8 +1,7 @@
 import './style.css'
 import Alpine from "alpinejs";
 import throttle from './throttle';
-import { wsconnect, consumerOpts, headers, JSONCodec } from '@nats-io/nats-core';
-import { OrderedConsumerOptions } from "@nats-io/jetstream";
+import { wsconnect, headers } from '@nats-io/nats-core';
 import { jetstream } from "@nats-io/jetstream";
 
 Alpine.data("whiteboard", (subject) => ({
@@ -18,9 +17,10 @@ Alpine.data("whiteboard", (subject) => ({
     const server = "ws://" + window.location.hostname + ":9222"
     this.nats = await wsconnect({ servers: server })
 
-    // const opts = OrderedConsumerOptions;
-    // const js = jetstream(this.nats)
-    const sub = await this.nats.subscribe(subject)
+    const stream = "whiteboard";
+    const js = jetstream(this.nats);
+    const orderedConsumer = await js.consumers.get(stream);
+    const sub = await orderedConsumer.consume();
 
     for await (const m of sub) {
       const data = m.json()
