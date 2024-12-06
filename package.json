@@ -3,19 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --port 3000 --host",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.7",
-    "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.2",
-    "vite": "^2.9.9"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "vite": "^6.0.3"
   },
   "dependencies": {
     "@nats-io/jetstream": "^3.0.0-34",
     "@nats-io/nats-core": "^3.0.0-47",
-    "alpinejs": "^3.10.2"
+    "alpinejs": "^3.14.6"
   }
 }
