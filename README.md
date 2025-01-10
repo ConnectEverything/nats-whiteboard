@@ -2,6 +2,9 @@
 
 This project is a simple (~100 lines of JavaScript) implementation of a real-time, persistent interactive whiteboard using [nats.js](https://github.com/nats-io/nats.js), [NATS Jetstream](https://docs.nats.io/nats-concepts/jetstream) and AlpineJS.
 
+## Video walkthrough
+[Building an Interactive Whiteboard with NATS Websockets | Rethink Connectivity Episode 3 ](https://www.youtube.com/watch?v=As5FojxWViI&list=PLgqCaaYodvKY22TpvwlsalIArTmc56W9h&index=3)
+
 ## Demo
 To see the NATS whiteboard in action, feel free to [try the demo](https://nats-whiteboard.onrender.com/)
 
